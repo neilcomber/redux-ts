@@ -1,16 +1,14 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useTypedSelector } from '../hooks/useTypedSelector';
 import { useActions } from '../hooks/useAction';
 
 const RepositoriesList: React.FC = () => {
 
   const [input, setInput] = useState('');
   const { searchRepositories } = useActions();
-  const state = useSelector((state) => {
-    return state
-  })
+  const { data, error, loading } = useTypedSelector((state) => state.repositories)
 
-  console.log(state)
+  console.log(data);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -18,7 +16,7 @@ const RepositoriesList: React.FC = () => {
 
   }
 
-  let content = '';
+
 
 
   return (<div>
@@ -27,7 +25,9 @@ const RepositoriesList: React.FC = () => {
       <button>Search</button>
     </form>
     <div>
-      {content}
+      {loading && <h3>loading...</h3>}
+      {error && <h3>{error}</h3>}
+      {!error && !loading && data.map((name) => <div key={name}>{name}</div>)}
     </div>
   </div>);
 };
